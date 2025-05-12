@@ -71,6 +71,8 @@ TEMPLATES = [
     },
 ]
 
+SECRET_KEY = os.environ.get('SECRET_KEY', 'fallback-secret-key')
+
 WSGI_APPLICATION = 'clinic_project.wsgi.application'
 
 AUTH_USER_MODEL = 'clinic.User'
@@ -82,12 +84,10 @@ LOGIN_REDIRECT_URL = 'clinic:home'
 
 DATABASES = {
     'default': dj_database_url.config(
-        # Используйте переменную окружения DATABASE_URL от Render
-        default=os.environ.get('DATABASE_URL'),
-        # Преобразование строки подключения в словарь настроек Django
+        default=os.environ.get('DATABASE_URL', ''),
         conn_max_age=600,
-        # Проверка здоровья соединения
         conn_health_checks=True,
+        engine='django.db.backends.postgresql'
     )
 }
 
