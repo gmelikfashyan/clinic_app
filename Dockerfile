@@ -30,7 +30,6 @@ COPY . /app/
 # Collect static files
 RUN python manage.py collectstatic --noinput
 
-RUN python manage.py makemigrations --empty clinic --name merged_migrations
 
 
 
