@@ -1,11 +1,11 @@
-# Используем официальный образ Python
-FROM python:3.11-slim
+# Use an official Python runtime as a parent image
+FROM python:3.10-slim
 
-# Устанавливаем переменные окружения
+# Set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-# Обновление системных пакетов и установка зависимостей
+# Обновление системных пакетов и установка зависимостей PostgreSQL
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     postgresql-client \
@@ -15,13 +15,12 @@ RUN apt-get update && \
     musl-dev && \
     rm -rf /var/lib/apt/lists/*
 
-# Создаем и устанавливаем рабочую директорию
 WORKDIR /app
 
-# Копируем requirements первым слоем для кэширования
+# Копирование requirements
 COPY requirements.txt /app/
 
-# Установка зависимостей с дополнительной диагностикой
+# Установка зависимостей Python
 RUN pip install --no-cache-dir \
     --upgrade pip \
     wheel \
@@ -29,33 +28,17 @@ RUN pip install --no-cache-dir \
     pip install --no-cache-dir psycopg2-binary && \
     pip install --no-cache-dir -r requirements.txt
 
-# Копируем весь проект
+# Копирование всего проекта
 COPY . /app/
 
-# Скрипт для выполнения миграций с расширенной диагностикой
-RUN <<EOF
-#!/bin/bash
-set -e
+# Collect static files
+RUN python manage.py collectstatic --noinput
 
-# Проверка переменных окружения
-if [ -z "$DATABASE_URL" ]; then
-    echo "ОШИБКА: DATABASE_URL не установлен. Миграции не могут быть выполнены."
-    exit 1
-fi
+# Run migrations (опционально)
+RUN python manage.py migrate
 
-# Попытка выполнения миграций с подробным выводом
-echo "Попытка выполнения миграций..."
-python manage.py migrate --noinput || {
-    echo "ОШИБКА при выполнении миграций. Проверьте подключение к базе данных."
-    exit 1
-}
-
-# Сбор статических файлов
-python manage.py collectstatic --noinput
-EOF
-
-# Открываем порт
+# Открытие порта
 EXPOSE 8000
 
-# Команда запуска
+# Запуск приложения через gunicorn
 CMD ["gunicorn", "--bind", "0.0.0.0:8000", "clinic_project.wsgi:application"]
