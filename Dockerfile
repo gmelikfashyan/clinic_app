@@ -25,7 +25,7 @@ RUN pip install --no-cache-dir \
     --upgrade pip \
     wheel \
     setuptools && \
-    pip install --no-cache-dir -r requirements.txtFROM python:3.11-slim
+    pip install --no-cache-dir -r requirements.txt
 
 
 # Copy the entire project
