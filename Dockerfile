@@ -1,24 +1,32 @@
 # Use an official Python runtime as a parent image
-FROM python:3.11-slim
+FROM python:3.10-slim
+
+# Обновление pip и установка системных зависимостей
+RUN pip install --upgrade pip && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends \
+    postgresql-client \
+    gcc \
+    python3-dev \
+    musl-dev && \
+    rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Копирование и установка зависимостей с доп. параметрами
+COPY requirements.txt /app/
+
+# Более надежная установка зависимостей
+RUN pip install --no-cache-dir \
+    --upgrade pip \
+    wheel \
+    setuptools && \
+    pip install --no-cache-dir -r requirements.txtFROM python:3.11-slim
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-# Set work directory
-WORKDIR /app
-
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    postgresql-client \
-    gcc \
-    && rm -rf /var/lib/apt/lists/*
-
-# Copy requirements file
-COPY requirements.txt /app/
-
-# Install Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the entire project
 COPY . /app/
