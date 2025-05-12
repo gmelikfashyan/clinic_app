@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card border-primary">
+        <div class="card-header bg-primary text-white">
+            <div class="d-flex justify-content-between align-items-center">
+                <h3 class="mb-0">Медицинское заключение</h3>
+                <span class="badge bg-light text-dark fs-6">
+                    {{ report.created_at|date:"d.m.Y H:i" }}
+                </span>
+            </div>
+        </div>
+        
+        <div class="card-body">
+            <!-- Информация о докторе и пациенте -->
+            <div class="row mb-4 g-3">
+                <div class="col-md-6">
+                    <div class="p-3 bg-light rounded">
+                        <h5 class="text-muted fs-6 fw-bold">Доктор</h5>
+                        <p class="fs-5 mb-0">
+                            {{ report.appointment.doctor.user.get_full_name }}
+                            <br>
+                            <small class="text-muted">
+                                {{ report.appointment.doctor.specialization }}
+                            </small>
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="p-3 bg-light rounded">
+                        <h5 class="text-muted fs-6 fw-bold">Пациент</h5>
+                        <p class="fs-5 mb-0">
+                            {{ report.appointment.patient.user.get_full_name }}
+                            <br>
+                            <small class="text-muted">
+                                {{ report.appointment.date|date:"d.m.Y" }} 
+                                в {{ report.appointment.time_slot.start_time|time:"H:i" }}
+                            </small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-4 ps-3 border-start border-3 border-primary">
+                <h4 class="text-primary mb-3">Симптомы</h4>
+                <div class="ps-2">
+                    {{ report.symptoms|linebreaks }}
+                </div>
+            </div>
+            
+            <!-- Диагноз -->
+            <div class="mb-4 ps-3 border-start border-3 border-primary">
+                <h4 class="text-primary mb-3">Диагноз</h4>
+                <div class="ps-2">
+                    {{ report.diagnosis|linebreaks }}
+                </div>
+            </div>
+            
+            <!-- Лечение -->
+            <div class="mb-4 ps-3 border-start border-3 border-primary">
+                <h4 class="text-primary mb-3">Назначенное лечение</h4>
+                <div class="ps-2">
+                    {{ report.treatment|linebreaks }}
+                </div>
+            </div>
+            
+            <!-- Рекомендации -->
+            <div class="ps-3 border-start border-3 border-primary">
+                <h4 class="text-primary mb-3">Рекомендации</h4>
+                <div class="ps-2">
+                    {{ report.notes|linebreaks }}
+                </div>
+            </div>
+        </div>
+        
+        <div class="card-footer bg-light">
+            <div class="d-flex justify-content-between">
+                <a href="{% url 'clinic:appointment_detail' report.appointment.pk %}" 
+                   class="btn btn-secondary">
+                   <i class="bi bi-arrow-left"></i> Назад к записи
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

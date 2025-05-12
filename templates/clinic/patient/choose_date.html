@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-4">
+    <h1 class="text-center mb-4">Выберите дату для {{ doctor.user.get_full_name }}</h1>
+    
+    <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-3">
+        {% for day in date_range %}
+        <div class="col">
+            <a href="{% url 'clinic:choose_timeslot' doctor.id day|date:'Y-m-d' %}" 
+               class="card text-decoration-none text-center p-3 h-100 hover-shadow">
+                <div class="card-body p-2">
+                    <div class="fs-5 fw-bold">{{ day|date:"d" }}</div>
+                    <div class="text-muted small">{{ day|date:"M" }}</div>
+                    <div class="small mt-1">{{ day|date:"l" }}</div>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+    .hover-shadow:hover {
+        box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+    }
+</style>
+{% endblock %}

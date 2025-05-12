@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-4">
+    <h1 class="text-center mb-4">Выберите время {{ selected_date|date:"d.m.Y" }}</h1>
+    
+    <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-3">
+        {% for slot in time_slots %}
+        <div class="col">
+            <button class="btn btn-outline-primary w-100 py-3 timeslot-btn" data-slot-id="{{ slot.id }}">
+                <span class="fs-5">{{ slot.start_time|time:"H:i" }}</span>
+            </button>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info text-center">
+                Нет доступных слотов
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+<script>
+document.querySelectorAll('.timeslot-btn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+        const response = await fetch('{% url "clinic:create_appointment" %}', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `time_slot_id=${btn.dataset.slotId}`
+        });
+        
+        const result = await response.json();
+        if (result.status === 'success') {
+            window.location.href = '{% url "clinic:patient_appointments" %}';
+        }
+    });
+});
+</script>
+{% endblock %}

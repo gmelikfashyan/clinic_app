@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid p-0">
+    <div class="bg-primary bg-gradient text-white py-5">
+        <div class="container py-5">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <h1 class="display-4 fw-bold mb-4">Добро пожаловать в Поликлинику "Клиникум"</h1>
+                    <p class="lead mb-4">Забота о всей семье с 2003 года.</p>
+                    <div class="d-flex gap-3">
+                        {% if user.is_authenticated %}
+                            {% if user.is_patient %}
+                                <a href="{% url 'clinic:patient/appointments/' %}" class="btn btn-light btn-lg px-4">Личный кабинет</a>
+                            {% else %}
+                                <a href="{% url 'clinic:doctor_dashboard' %}" class="btn btn-light btn-lg px-4">Кабинет врача</a>
+                            {% endif %}
+                            <form action="{% url 'logout' %}" method="post" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-outline-light btn-lg px-4 ms-2">Выйти</button>
+                            </form>
+                        {% else %}
+                            <a href="{% url 'login' %}" class="btn btn-light btn-lg px-4">Войти</a>
+                            <a href="{% url 'registration' %}" class="btn btn-outline-light btn-lg px-4">Регистрация</a>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="col-lg-4 d-none d-lg-block">
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container my-5 py-5">
+        <h2 class="text-center mb-5">Наши преимущества</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="bg-light p-3 rounded-circle d-inline-block mb-3">
+                            <i class="fas fa-user-md fa-3x text-primary"></i>
+                        </div>
+                        <h3>Профессиональные врачи</h3>
+                        <p class="text-muted">Только проверенные специалисты с большим опытом практической медицины</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="bg-light p-3 rounded-circle d-inline-block mb-3">
+                            <i class="fas fa-calendar-check fa-3x text-primary"></i>
+                        </div>
+                        <h3>Удобная запись</h3>
+                        <p class="text-muted">Удобная круглосуточная запись прямо на сайте</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="bg-light p-3 rounded-circle d-inline-block mb-3">
+                            <i class="fas fa-hospital fa-3x text-primary"></i>
+                        </div>
+                        <h3>Современное оборудование</h3>
+                        <p class="text-muted">Новейшее оборудование для точной оценки Вашего здоровья</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if user.is_patient %}
+        <div class="bg-light py-5">
+            <div class="container text-center py-4">
+                <h2 class="mb-4">Готовы записаться на прием?</h2>
+                <a href="{% if user.is_authenticated %}{% url 'clinic:book_appointment_start' %}{% else %}{% url 'login' %}{% endif %}" 
+                class="btn btn-primary btn-lg px-5">
+                    {% if user.is_authenticated %}Записаться онлайн{% else %}Зарегистрироваться{% endif %}
+                </a>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        Запись на {{ appointment.time_slot.start_time|date:"d.m.Y H:m" }}
+    </div>
+    <div class="card-body">
+        <h5 class="card-title">
+            Доктор: {{ appointment.doctor.user.get_full_name }}
+        </h5>
+        <p class="card-text">
+            Пациент: {{ appointment.patient.user.get_full_name }}
+        </p>
+        <p class="card-text">
+            Статус: {{ appointment.get_status_display }}
+        </p>
+        
+        {% if is_patient and appointment.status == 'BOOKED' %}
+        <a href="#" class="btn btn-danger">Отменить запись</a>
+        {% endif %}
+        
+        {% if is_doctor and appointment.status == 'BOOKED' and not appointment.report %}
+        <a href="{% url 'clinic:create_report' appointment.pk %}" class="btn btn-primary">
+            Создать медицинское заключение
+        </a>
+        {% endif %}
+        
+        {% if is_doctor and appointment.report and appointment.status == 'BOOKED' %}
+        <form method="post" action="{% url 'clinic:complete_appointment' appointment.pk %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-success">Завершить прием</button>
+        </form>
+        {% endif %}
+        
+        {% if appointment.status == 'COMPLETED' and appointment.report %}
+        <a href="{% url 'clinic:detail_report' appointment.report.pk %}" class="btn btn-info">Просмотреть заключение</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
