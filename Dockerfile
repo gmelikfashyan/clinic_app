@@ -33,11 +33,10 @@ RUN python manage.py collectstatic --noinput
 RUN python manage.py makemigrations --empty clinic --name merged_migrations
 
 
-# Run migrations (опционально)
-RUN python manage.py migrate
+
 
 # Открытие порта
 EXPOSE 8000
 
 # Запуск приложения через gunicorn
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "clinic_project.wsgi:application"]
+CMD ["sh", "-c", "python manage.py migrate && gunicorn --bind 0.0.0.0:8000 clinic_project.wsgi:application"]
