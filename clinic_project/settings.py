@@ -82,12 +82,12 @@ LOGIN_REDIRECT_URL = 'clinic:home'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+# Настройки базы данных
 DATABASES = {
     'default': dj_database_url.config(
-        default=os.environ.get('DATABASE_URL', ''),
+        default=os.environ.get('DATABASE_URL'),
         conn_max_age=600,
         conn_health_checks=True,
-        engine='django.db.backends.postgresql'
     )
 }
 
