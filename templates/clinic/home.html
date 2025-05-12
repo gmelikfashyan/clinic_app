@@ -11,7 +11,7 @@
                     <div class="d-flex gap-3">
                         {% if user.is_authenticated %}
                             {% if user.is_patient %}
-                                <a href="{% url 'clinic:patient/appointments/' %}" class="btn btn-light btn-lg px-4">Личный кабинет</a>
+                                <a href="{% url 'clinic:patient_appointments' %}" class="btn btn-light btn-lg px-4">Личный кабинет</a>
                             {% else %}
                                 <a href="{% url 'clinic:doctor_dashboard' %}" class="btn btn-light btn-lg px-4">Кабинет врача</a>
                             {% endif %}
