@@ -34,8 +34,7 @@ COPY . /app/
 # Collect static files
 RUN python manage.py collectstatic --noinput
 
-# Run migrations (опционально)
-RUN python manage.py migrate
+
 
 # Открытие порта
 EXPOSE 8000
