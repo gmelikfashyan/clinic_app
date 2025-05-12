@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 import os
 from pathlib import Path
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -80,14 +81,14 @@ LOGIN_REDIRECT_URL = 'clinic:home'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'clinic_db',
-        'USER': 'clinic_user',
-        'PASSWORD': 'Melik123',
-        'HOST': 'localhost',
-        'PORT': '5432',
-    }
+    'default': dj_database_url.config(
+        # Используйте переменную окружения DATABASE_URL от Render
+        default=os.environ.get('DATABASE_URL'),
+        # Преобразование строки подключения в словарь настроек Django
+        conn_max_age=600,
+        # Проверка здоровья соединения
+        conn_health_checks=True,
+    )
 }
 
 
