@@ -6,3 +6,10 @@ pillow==11.2.1
 psycopg2==2.9.10
 sqlparse==0.5.3
 tzdata==2025.2
+psycopg2-binary
+whitenoise
+django-bootstrap5
+gunicorn
+dj-database-url
+setuptools
+wheel
